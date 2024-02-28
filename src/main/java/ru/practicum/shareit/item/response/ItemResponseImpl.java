@@ -19,14 +19,14 @@ public class ItemResponseImpl implements ItemResponse {
     }
 
     @Override
-    public List<Item> getAll(Long userId) {
+    public List<Item> getAll(long userId) {
         return itemsStorage.values().stream()
                 .filter(o -> o.getOwner().getId() == userId)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Item uptade(Long id, Item item, Long idUser) {
+    public Item uptade(Long id, Item item, long idUser) {
         Item oldItem = itemsStorage.get(id);
         if (oldItem.getOwner().getId() != idUser) {
             throw new AnotherUserException("Пользователь с id = " + idUser + " не имеет права " +
