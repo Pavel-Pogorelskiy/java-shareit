@@ -7,9 +7,9 @@ import java.util.List;
 public interface ItemResponse {
     Item get(Long id);
 
-    List<Item> getAll(Long userId);
+    List<Item> getAll(long userId);
 
-    Item uptade(Long id, Item item, Long userId);
+    Item uptade(Long id, Item item, long idUser);
 
     Item save(Item item);
 
