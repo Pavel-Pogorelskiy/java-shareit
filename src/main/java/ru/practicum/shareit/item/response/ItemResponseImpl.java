@@ -26,7 +26,7 @@ public class ItemResponseImpl implements ItemResponse {
     }
 
     @Override
-    public Item uptade(Long id, Item item, long idUser) {
+    public Item update(Long id, Item item, long idUser) {
         Item oldItem = itemsStorage.get(id);
         if (oldItem.getOwner().getId() != idUser) {
             throw new AnotherUserException("Пользователь с id = " + idUser + " не имеет права " +

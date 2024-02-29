@@ -10,9 +10,6 @@ import ru.practicum.shareit.user.service.UserService;
 import javax.validation.Valid;
 import java.util.List;
 
-/**
- * TODO Sprint add-controllers.
- */
 @RestController
 @RequestMapping(path = "/users")
 @AllArgsConstructor
@@ -39,9 +36,9 @@ public class UserController {
     }
 
     @PatchMapping(value = "/{userId}")
-    public User uptadeUser(@PathVariable Long userId, @RequestBody UserDto request) {
+    public User updateUser(@PathVariable Long userId, @RequestBody UserDto request) {
         log.info("Обновление пользователя {}", request);
-        return userService.uptadeUser(userId, request);
+        return userService.updateUser(userId, request);
     }
 
     @DeleteMapping(value = "/{userId}")

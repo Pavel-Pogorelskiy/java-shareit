@@ -21,7 +21,7 @@ public class UserResponseImpl implements UserResponse {
     }
 
     @Override
-    public User uptade(Long id, User user) {
+    public User update(Long id, User user) {
         User oldUser = usersStorage.get(id);
         if (user.getEmail() != null) {
             if (!user.getEmail().contains(oldUser.getEmail())) {

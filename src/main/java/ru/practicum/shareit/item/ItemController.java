@@ -9,9 +9,6 @@ import ru.practicum.shareit.item.service.ItemService;
 import javax.validation.Valid;
 import java.util.List;
 
-/**
- * TODO Sprint add-controllers.
- */
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -40,10 +37,10 @@ public class ItemController {
     }
 
     @PatchMapping(value = "/{itemId}")
-    public ItemDto uptadeItem(@RequestHeader("X-Sharer-User-Id") Long userId,
+    public ItemDto updateItem(@RequestHeader("X-Sharer-User-Id") Long userId,
                               @RequestBody ItemDto itemDto, @PathVariable Long itemId) {
         log.info("Обновление вещи {}", itemDto);
-        return itemService.uptadeItem(itemDto, userId, itemId);
+        return itemService.updateItem(itemDto, userId, itemId);
     }
 
     @GetMapping(value = "/search")

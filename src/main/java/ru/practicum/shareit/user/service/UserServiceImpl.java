@@ -25,8 +25,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User uptadeUser(Long id, UserDto request) {
-        return userResponse.uptade(id, userMapper.toUser(request));
+    public User updateUser(Long id, UserDto request) {
+        return userResponse.update(id, userMapper.toUser(request));
     }
 
     @Override
