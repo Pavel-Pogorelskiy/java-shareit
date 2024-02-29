@@ -7,7 +7,7 @@ import java.util.List;
 public interface UserResponse {
     User save(User user);
 
-    User uptade(Long id, User user);
+    User update(Long id, User user);
 
     void remove(Long id);
 

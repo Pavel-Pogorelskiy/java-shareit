@@ -3,7 +3,6 @@ package ru.practicum.shareit.item.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.mapper.ItemListMapper;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.response.ItemResponse;
@@ -18,7 +17,6 @@ import java.util.List;
 public class ItemServiceImpl implements ItemService {
     private final ItemResponse itemResponse;
     private final ItemMapper itemMapper;
-    private final ItemListMapper itemListMapper;
     private final UserService userService;
     private Long idItem = 0L;
 
@@ -29,13 +27,13 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> getItemToUser(Long userId) {
-        return itemListMapper.toDtoList(itemResponse.getAll(userId));
+        return itemMapper.toDtoList(itemResponse.getAll(userId));
     }
 
     @Override
-    public ItemDto uptadeItem(ItemDto request, Long userId, Long itemId) {
+    public ItemDto updateItem(ItemDto request, Long userId, Long itemId) {
         validationUser(userId);
-        return itemMapper.toDto(itemResponse.uptade(itemId, itemMapper.toItem(request), userId));
+        return itemMapper.toDto(itemResponse.update(itemId, itemMapper.toItem(request), userId));
     }
 
     @Override
@@ -65,6 +63,6 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemDto> searchItem(String search, Long userId) {
         validationUser(userId);
-        return itemListMapper.toDtoList(itemResponse.searchItem(search));
+        return itemMapper.toDtoList(itemResponse.searchItem(search));
     }
 }

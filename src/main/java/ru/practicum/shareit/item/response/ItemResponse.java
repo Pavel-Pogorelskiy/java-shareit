@@ -9,7 +9,7 @@ public interface ItemResponse {
 
     List<Item> getAll(long userId);
 
-    Item uptade(Long id, Item item, long idUser);
+    Item update(Long id, Item item, long idUser);
 
     Item save(Item item);
 
