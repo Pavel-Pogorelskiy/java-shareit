@@ -2,10 +2,11 @@ package ru.practicum.shareit.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.exception.NotFoundDataException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.response.UserResponse;
+import ru.practicum.shareit.user.response.UserRepositoryJpa;
 
 import java.util.List;
 
@@ -13,38 +14,45 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
-    private final UserResponse userResponse;
-    private Long idUser = 0L;
+    private final UserRepositoryJpa userRepository;
 
     @Override
     public User saveUser(UserDto request) {
         User user = userMapper.toUser(request);
-        userResponse.validDupEmail(user);
-        user.setId(idUser());
-        return userResponse.save(user);
+        return userRepository.save(user);
     }
 
     @Override
     public User updateUser(Long id, UserDto request) {
-        return userResponse.update(id, userMapper.toUser(request));
+        if (!userRepository.existsById(id)) {
+            throw new NotFoundDataException("Пользователя с id = " + id + " не найден");
+        }
+        User user = userMapper.toUser(request);
+        user.setId(id);
+        if (user.getEmail() == null) {
+            user.setEmail(userRepository.findById(id).get().getEmail());
+        }
+        if (user.getName() == null) {
+            user.setName(userRepository.findById(id).get().getName());
+        }
+        return userRepository.save(user);
     }
 
     @Override
     public void removeUser(Long id) {
-        userResponse.remove(id);
+        userRepository.deleteById(id);
     }
 
     @Override
     public User getUser(Long id) {
-        return userResponse.get(id);
+        if (!userRepository.existsById(id)) {
+            throw new NotFoundDataException("Пользователя с id = " + id + " не найден");
+        }
+        return userRepository.findById(id).get();
     }
 
     @Override
     public List<User> getAllUser() {
-        return userResponse.getAll();
-    }
-
-    private Long idUser() {
-        return ++idUser;
+        return userRepository.findAll();
     }
 }

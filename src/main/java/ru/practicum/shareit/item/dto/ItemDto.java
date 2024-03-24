@@ -3,9 +3,12 @@ package ru.practicum.shareit.item.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.practicum.shareit.booking.dto.BookingResponseToItemDto;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -18,4 +21,7 @@ public class ItemDto {
     private String description;
     @NotNull
     private Boolean available;
+    private BookingResponseToItemDto nextBooking;
+    private BookingResponseToItemDto lastBooking;
+    private List<CommentResponseDto> comments = new ArrayList<>();
 }

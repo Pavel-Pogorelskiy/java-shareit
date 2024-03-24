@@ -3,6 +3,8 @@ package ru.practicum.shareit.item;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.item.dto.CommentResearchDto;
+import ru.practicum.shareit.item.dto.CommentResponseDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.service.ItemService;
 
@@ -26,8 +28,8 @@ public class ItemController {
     @GetMapping(value = "/{itemId}")
     public ItemDto getItem(@RequestHeader("X-Sharer-User-Id") Long userId,
                            @PathVariable Long itemId) {
-        log.info("Получение вещи {}", itemService.getItem(itemId));
-        return itemService.getItem(itemId);
+        log.info("Получение вещи {}", itemService.getItem(itemId, userId));
+        return itemService.getItem(itemId, userId);
     }
 
     @GetMapping
@@ -48,5 +50,14 @@ public class ItemController {
                                          @RequestParam (defaultValue = "") String text) {
         log.info("Поиск вещи по запросу - " + text + ": {}", itemService.searchItem(text, userId));
         return itemService.searchItem(text, userId);
+    }
+
+    @PostMapping(value = "/{itemId}/comment")
+    public CommentResponseDto saveComment(@RequestHeader("X-Sharer-User-Id") Long userId,
+                                          @PathVariable Long itemId,
+                                          @Valid @RequestBody CommentResearchDto researchDto) {
+        log.info("Сохранение комментария пользователем с id = " + userId + " вещи с id = " + itemId
+                + " комментария {}", researchDto);
+        return itemService.saveComment(itemId, userId, researchDto);
     }
 }
