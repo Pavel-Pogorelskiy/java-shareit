@@ -30,7 +30,7 @@ public class BookingServiceImpl implements BookingService {
     private final BookingMapper bookingMapper;
 
     @Override
-    public BookingResponseDto saveBooking(BookingResearchDto bookingDto, Long userId) {
+    public BookingResponseDto saveBooking(BookingResearchDto bookingDto, long userId) {
         User booker = userService.getUser(userId);
         Item item = itemService.getItemToBooking(bookingDto.getItemId());
         if (bookingDto.getEnd().isBefore(bookingDto.getStart())
@@ -40,7 +40,7 @@ public class BookingServiceImpl implements BookingService {
         if (!item.getAvailable()) {
             throw new UnavailableItemException("Предмет с id = " + item.getId() + " недоступен");
         }
-        if (item.getOwner().getId() == booker.getId()) {
+        if (item.getOwner().getId().longValue() == booker.getId()) {
             throw new UserNotAccessException("Пользователь с id = " + booker.getId() + " является владельцем вещи " +
                     "с id = " + item.getId());
         }
@@ -52,13 +52,13 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public BookingResponseDto approvedOrRejectBooking(Long userId, Long bookingId, Boolean approved) {
+    public BookingResponseDto approvedOrRejectBooking(long userId, long bookingId, Boolean approved) {
         User owner = userService.getUser(userId);
         Optional<Booking> booking = bookingRepository.findById(bookingId);
         if (booking.isEmpty()) {
             throw new NotFoundDataException("Запрос на бронирование с id = " + bookingId + " не найден");
         }
-        if (booking.get().getItem().getOwner().getId() != owner.getId()) {
+        if (booking.get().getItem().getOwner().getId().longValue() != owner.getId()) {
             throw new UserNotAccessException("Пользователь с id = " + owner.getId() + " не является владельцем вещи" +
                     " с id = " + booking.get().getItem().getId());
         }
@@ -74,14 +74,14 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public BookingResponseDto getBooking(Long userId, Long bookingId) {
+    public BookingResponseDto getBooking(long userId, long bookingId) {
         User user = userService.getUser(userId);
         Optional<Booking> booking = bookingRepository.findById(bookingId);
         if (booking.isEmpty()) {
             throw new NotFoundDataException("Запрос на бронирование с id = " + bookingId + " не найден");
         }
-        if (booking.get().getItem().getOwner().getId() != user.getId()
-                && user.getId() != booking.get().getBooker().getId()) {
+        if (booking.get().getItem().getOwner().getId().longValue() != user.getId()
+                && user.getId().longValue() != booking.get().getBooker().getId()) {
             throw new UserNotAccessException("Пользователь с id = " + user.getId() + " не является владельцем вещи" +
                     " с id = " + booking.get().getItem().getId() + " или владельцем запроса на бронирования id = "
                     + booking.get().getId());
@@ -90,7 +90,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingResponseDto> getBookingToUser(Long userId, String state) {
+    public List<BookingResponseDto> getBookingToUser(long userId, String state) {
         userService.getUser(userId);
         List<Booking> bookings = new ArrayList<>();
         switch (state) {
@@ -126,7 +126,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingResponseDto> getBookingToOwner(Long userId, String state) {
+    public List<BookingResponseDto> getBookingToOwner(long userId, String state) {
         userService.getUser(userId);
         List<Booking> bookings = new ArrayList<>();
         switch (state) {
