@@ -8,17 +8,17 @@ import ru.practicum.shareit.item.model.Item;
 import java.util.List;
 
 public interface ItemService {
-    ItemDto getItem(Long id, Long userId);
+    ItemDto getItem(long id, long userId);
 
-    List<ItemDto> getItemToUser(Long userId);
+    List<ItemDto> getItemToUser(long userId);
 
-    ItemDto updateItem(ItemDto request, Long userId, Long itemId);
+    ItemDto updateItem(ItemDto request, long userId, long itemId);
 
-    ItemDto saveItem(ItemDto request, Long userId);
+    ItemDto saveItem(ItemDto request, long userId);
 
-    List<ItemDto> searchItem(String search, Long userId);
+    List<ItemDto> searchItem(String search, long userId);
 
-    Item getItemToBooking(Long id);
+    Item getItemToBooking(long id);
 
-    CommentResponseDto saveComment(Long itemId, Long userId, CommentResearchDto research);
+    CommentResponseDto saveComment(long itemId, long userId, CommentResearchDto research);
 }

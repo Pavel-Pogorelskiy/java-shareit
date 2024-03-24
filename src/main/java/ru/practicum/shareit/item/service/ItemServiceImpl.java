@@ -38,7 +38,7 @@ public class ItemServiceImpl implements ItemService {
     private final CommentRepositoryJpa commentRepositoryJpa;
 
     @Override
-    public ItemDto getItem(Long id, Long userId) {
+    public ItemDto getItem(long id, long userId) {
         User user = userService.getUser(userId);
         Optional<Item> item = itemRepository.findById(id);
         if (item.isEmpty()) {
@@ -47,7 +47,7 @@ public class ItemServiceImpl implements ItemService {
         ItemDto itemResponse = itemMapper.toDto(item.get());
         BookingResponseToItemDto nextBooking = null;
         BookingResponseToItemDto lastBooking = null;
-        if (item.get().getOwner().getId() == user.getId()) {
+        if (item.get().getOwner().getId().longValue() == user.getId()) {
             if (!bookingRepositoryJpa.findBookingByItemAndStartAfter(id, Status.APPROVED).isEmpty()) {
                 nextBooking = bookingMapper.toBookingToItem(bookingRepositoryJpa
                         .findBookingByItemAndStartAfter(id, Status.APPROVED).get(0));
@@ -67,11 +67,11 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> getItemToUser(Long userId) {
-        User user = userService.getUser(userId);
+    public List<ItemDto> getItemToUser(long userId) {
+        userService.getUser(userId);
         return itemMapper.toDtoList(itemRepository
                         .findByOwnerIdOrderByIdAsc(userId)).stream()
-                .map(
+                .peek(
                         i -> {
                             if (!bookingRepositoryJpa.findBookingByItemAndStartAfter(i.getId(), Status.APPROVED)
                                     .isEmpty()) {
@@ -87,14 +87,13 @@ public class ItemServiceImpl implements ItemService {
                             i.setComments(commentMapper.toListCommentDto(commentRepositoryJpa
                                     .findCommentByItem_Owner_Id(userId)));
                             }
-                            return i;
                         }
                 )
                 .collect(Collectors.toList());
     }
 
     @Override
-    public ItemDto updateItem(ItemDto request, Long userId, Long itemId) {
+    public ItemDto updateItem(ItemDto request, long userId, long itemId) {
         Item item = itemRepository.findById(itemId).get();
         if (item.getOwner().getId() != userId) {
             throw new AnotherUserException("Пользователь с id = " + userId + " не имеет права " +
@@ -116,19 +115,19 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDto saveItem(ItemDto request, Long userId) {
+    public ItemDto saveItem(ItemDto request, long userId) {
         userService.getUser(userId);
         Item item = itemMapper.toItem(request);
         item.setOwner(createUser(userId));
         return itemMapper.toDto(itemRepository.save(item));
     }
 
-    private User createUser(Long idUser) {
+    private User createUser(long idUser) {
         return userService.getUser(idUser);
     }
 
     @Override
-    public List<ItemDto> searchItem(String search, Long userId) {
+    public List<ItemDto> searchItem(String search, long userId) {
         userService.getUser(userId);
         List<ItemDto> items = new ArrayList<>();
         if (!search.isBlank()) {
@@ -138,7 +137,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Item getItemToBooking(Long id) {
+    public Item getItemToBooking(long id) {
         Optional<Item> item = itemRepository.findById(id);
         if (item.isEmpty()) {
             throw new NotFoundDataException("Вещь с id = " + id + " не найдена");
@@ -147,7 +146,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public CommentResponseDto saveComment(Long itemId, Long userId, CommentResearchDto research) {
+    public CommentResponseDto saveComment(long itemId, long userId, CommentResearchDto research) {
         User user = userService.getUser(userId);
         Optional<Item> item = itemRepository.findById(itemId);
         if (item.isEmpty()) {
