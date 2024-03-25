@@ -2,6 +2,7 @@ package ru.practicum.shareit.booking.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingResearchDto;
 import ru.practicum.shareit.booking.dto.BookingResponseDto;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
@@ -30,6 +31,7 @@ public class BookingServiceImpl implements BookingService {
     private final BookingMapper bookingMapper;
 
     @Override
+    @Transactional
     public BookingResponseDto saveBooking(BookingResearchDto bookingDto, long userId) {
         User booker = userService.getUser(userId);
         Item item = itemService.getItemToBooking(bookingDto.getItemId());
@@ -52,6 +54,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional
     public BookingResponseDto approvedOrRejectBooking(long userId, long bookingId, Boolean approved) {
         User owner = userService.getUser(userId);
         Optional<Booking> booking = bookingRepository.findById(bookingId);

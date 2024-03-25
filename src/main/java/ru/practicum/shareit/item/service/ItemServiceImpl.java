@@ -2,6 +2,7 @@ package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingResponseToItemDto;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.model.Status;
@@ -93,6 +94,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional
     public ItemDto updateItem(ItemDto request, long userId, long itemId) {
         Item item = itemRepository.findById(itemId).get();
         if (item.getOwner().getId() != userId) {
@@ -115,6 +117,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional
     public ItemDto saveItem(ItemDto request, long userId) {
         userService.getUser(userId);
         Item item = itemMapper.toItem(request);
@@ -146,6 +149,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional
     public CommentResponseDto saveComment(long itemId, long userId, CommentResearchDto research) {
         User user = userService.getUser(userId);
         Optional<Item> item = itemRepository.findById(itemId);
