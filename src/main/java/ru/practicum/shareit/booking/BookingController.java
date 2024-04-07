@@ -2,12 +2,14 @@ package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingResearchDto;
 import ru.practicum.shareit.booking.dto.BookingResponseDto;
 import ru.practicum.shareit.booking.service.BookingService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import java.util.List;
 
 
@@ -15,6 +17,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "/bookings")
+@Validated
 public class BookingController {
     private final BookingService bookingService;
 
@@ -35,24 +38,36 @@ public class BookingController {
 
     @GetMapping(value = "/{bookingId}")
     public BookingResponseDto getBooking(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                                      @PathVariable Long bookingId) {
+                                         @PathVariable Long bookingId) {
         log.info("Получение запроса на бронирование с id = ", bookingId);
         return bookingService.getBooking(userId, bookingId);
     }
 
     @GetMapping
     public List<BookingResponseDto> getBookingsToBooker(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                                        @RequestParam(defaultValue = "ALL")
-                                                        String state) {
-        log.info("Получение запросов на бронирование для пользователя с id = {}", userId);
-        return bookingService.getBookingToUser(userId, state);
+                                                        @RequestParam(defaultValue = "ALL") String state,
+                                                        @RequestParam(defaultValue = "0") @Min(0) Long from,
+                                                        @RequestParam(required = false) @Min(1) Long size) {
+        if (size == null) {
+            log.info("Получение запросов на бронирование для пользователя с id = {}", userId);
+            return bookingService.getBookingToUser(userId, state, from, Long.MAX_VALUE);
+        } else {
+            log.info("Получение запросов на бронирование для пользователя с id = {}", userId);
+            return bookingService.getBookingToUser(userId, state, from, size);
+        }
     }
 
     @GetMapping(value = "/owner")
     public List<BookingResponseDto> getBookingsToOwner(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                                        @RequestParam(defaultValue = "ALL")
-                                                        String state) {
-        log.info("Получение запросов на бронирование для пользователя с id = {}", userId);
-        return bookingService.getBookingToOwner(userId, state);
+                                                       @RequestParam(defaultValue = "ALL") String state,
+                                                       @RequestParam(defaultValue = "0") @Min(0) Long from,
+                                                       @RequestParam(required = false) @Min(1) Long size) {
+        if (size == null) {
+            log.info("Получение запросов на бронирование для пользователя с id = {}", userId);
+            return bookingService.getBookingToOwner(userId, state, from, Long.MAX_VALUE);
+        } else {
+            log.info("Получение запросов на бронирование для пользователя с id = {}", userId);
+            return bookingService.getBookingToOwner(userId, state, from, size);
+        }
     }
 }

@@ -19,6 +19,7 @@ import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.response.CommentRepositoryJpa;
 import ru.practicum.shareit.item.response.ItemRepositoryJpa;
+import ru.practicum.shareit.request.response.ItemRequestJpa;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
@@ -34,6 +35,7 @@ public class ItemServiceImpl implements ItemService {
     private final ItemMapper itemMapper;
     private final UserService userService;
     private final BookingRepositoryJpa bookingRepositoryJpa;
+    private final ItemRequestJpa itemRequestJpa;
     private final BookingMapper bookingMapper;
     private final CommentMapper commentMapper;
     private final CommentRepositoryJpa commentRepositoryJpa;
@@ -84,9 +86,9 @@ public class ItemServiceImpl implements ItemService {
                                 i.setLastBooking(bookingMapper.toBookingToItem(bookingRepositoryJpa
                                         .findBookingByItemAndStartBefore(i.getId(), Status.APPROVED).get(0)));
                             }
-                            if (commentRepositoryJpa.findCommentByItem_Owner_Id(userId).isEmpty()) {
+                            if (!commentRepositoryJpa.findCommentByItem_Id(i.getId()).isEmpty()) {
                             i.setComments(commentMapper.toListCommentDto(commentRepositoryJpa
-                                    .findCommentByItem_Owner_Id(userId)));
+                                    .findCommentByItem_Id(i.getId())));
                             }
                         }
                 )
@@ -96,7 +98,11 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public ItemDto updateItem(ItemDto request, long userId, long itemId) {
-        Item item = itemRepository.findById(itemId).get();
+        Optional<Item> itemOptional = itemRepository.findById(itemId);
+        if (itemOptional.isEmpty()) {
+            throw new NotFoundDataException("Вещь с id = " + itemId + " не найдена");
+        }
+        Item item = itemOptional.get();
         if (item.getOwner().getId() != userId) {
             throw new AnotherUserException("Пользователь с id = " + userId + " не имеет права " +
                     "на изменение вещи, так как не является ее владельцем");
@@ -122,6 +128,12 @@ public class ItemServiceImpl implements ItemService {
         userService.getUser(userId);
         Item item = itemMapper.toItem(request);
         item.setOwner(createUser(userId));
+        if (request.getRequestId() != null) {
+            if (itemRequestJpa.findById(request.getRequestId()).isEmpty()) {
+                throw new NotFoundDataException("Запрос с id = " + request.getRequestId() + "не найден");
+            }
+            item.setRequest(itemRequestJpa.findById(request.getRequestId()).get());
+        }
         return itemMapper.toDto(itemRepository.save(item));
     }
 
@@ -134,7 +146,7 @@ public class ItemServiceImpl implements ItemService {
         userService.getUser(userId);
         List<ItemDto> items = new ArrayList<>();
         if (!search.isBlank()) {
-            items = itemMapper.toDtoList(itemRepository.findByName(search, search));
+            items = itemMapper.toDtoList(itemRepository.findByNameAndDescription(search, search));
         }
         return items;
     }
