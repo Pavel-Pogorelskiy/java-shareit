@@ -44,6 +44,9 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void removeUser(Long id) {
+        if (!userRepository.existsById(id)) {
+            throw new NotFoundDataException("Пользователя с id = " + id + " не найден");
+        }
         userRepository.deleteById(id);
     }
 

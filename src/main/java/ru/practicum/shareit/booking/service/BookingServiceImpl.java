@@ -93,7 +93,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingResponseDto> getBookingToUser(long userId, String state) {
+    public List<BookingResponseDto> getBookingToUser(long userId, String state, long from, long size) {
         userService.getUser(userId);
         List<Booking> bookings = new ArrayList<>();
         switch (state) {
@@ -125,11 +125,14 @@ public class BookingServiceImpl implements BookingService {
             default:
                 throw new NotFoundStateException("Unknown state: " + state);
         }
-        return bookingMapper.toListDto(bookings);
+        return bookingMapper.toListDto(bookings).stream()
+                .skip(from)
+                .limit(size)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<BookingResponseDto> getBookingToOwner(long userId, String state) {
+    public List<BookingResponseDto> getBookingToOwner(long userId, String state, long from, long size) {
         userService.getUser(userId);
         List<Booking> bookings = new ArrayList<>();
         switch (state) {
@@ -161,6 +164,9 @@ public class BookingServiceImpl implements BookingService {
             default:
                 throw new NotFoundStateException("Unknown state: " + state);
         }
-        return bookingMapper.toListDto(bookings);
+        return bookingMapper.toListDto(bookings).stream()
+                .skip(from)
+                .limit(size)
+                .collect(Collectors.toList());
     }
 }
