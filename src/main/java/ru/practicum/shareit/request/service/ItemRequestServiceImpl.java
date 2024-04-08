@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exception.NotFoundDataException;
+import ru.practicum.shareit.item.dto.ItemToRequestResponse;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.response.ItemRepositoryJpa;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
@@ -14,8 +15,12 @@ import ru.practicum.shareit.request.response.ItemRequestJpa;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
+
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toList;
 
 @Service
 @RequiredArgsConstructor
@@ -38,33 +43,36 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     @Override
     public List<ItemRequestsResponseDto> getRequestsToUser(long userId) {
         User user = userService.getUser(userId);
-        return itemRequestMapper.toDtoList(itemRequestJpa
-                        .findItemRequestByOwner_IdOrderByCreatedDesc(user.getId())).stream()
-                .peek(
-                        i -> {
-                            if (!itemRepositoryJpa.findByRequest_Id(i.getId()).isEmpty()) {
-                                i.setItems(itemMapper.toDtoListItemsRequest(
-                                        itemRepositoryJpa.findByRequest_Id(i.getId())));
-                            }
-                        })
-                .collect(Collectors.toList());
+        List<ItemRequestsResponseDto> requests = itemRequestMapper
+                .toDtoList(itemRequestJpa.findItemRequestByOwner_IdOrderByCreatedDesc(user.getId()));
+        return getItemRequestsResponseDto(requests);
+    }
+
+    private List<ItemRequestsResponseDto> getItemRequestsResponseDto(List<ItemRequestsResponseDto> requests) {
+        List<Long> requestIds = requests.stream()
+                .map(ItemRequestsResponseDto::getId)
+                .collect(toList());
+        Map<Long, List<ItemToRequestResponse>> itemsByRequest = itemRepositoryJpa.findByRequest_IdIn(requestIds)
+                .stream()
+                .map(itemMapper::toDtoItemToRequest)
+                .collect(groupingBy(ItemToRequestResponse::getRequestId, toList()));
+        if (!itemsByRequest.isEmpty()) {
+            requests.stream()
+                    .peek(r -> r.setItems(itemsByRequest.getOrDefault(r.getId(), Collections.emptyList())))
+                    .collect(toList());
+        }
+        return requests;
     }
 
     @Override
     public List<ItemRequestsResponseDto> getRequestsToAnotherUsers(long userId, long from, long size) {
         User user = userService.getUser(userId);
-        return itemRequestMapper.toDtoList(itemRequestJpa
+        List<ItemRequestsResponseDto> requests = itemRequestMapper.toDtoList(itemRequestJpa
                         .findItemRequestNotByOwner_IdOrderByCreatedDesc(user.getId())).stream()
-                .peek(
-                        i -> {
-                            if (!itemRepositoryJpa.findByRequest_Id(i.getId()).isEmpty()) {
-                                i.setItems(itemMapper.toDtoListItemsRequest(
-                                        itemRepositoryJpa.findByRequest_Id(i.getId())));
-                            }
-                        })
                 .skip(from)
                 .limit(size)
-                .collect(Collectors.toList());
+                .collect(toList());
+        return getItemRequestsResponseDto(requests);
     }
 
     @Override

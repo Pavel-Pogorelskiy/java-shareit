@@ -165,4 +165,41 @@ class ItemRepositoryJpaTest {
         List<Item> items = repositoryJpa.findByRequest_Id(1L);
         assertEquals(1, items.size());
     }
+
+    @Test
+    @DirtiesContext
+    void findByRequest_IdInTest() {
+        User user1 = new User(null, "Пользователь 1", "user1@yandex.ru");
+        User user2 = new User(null, "Пользователь 2", "user2@yandex.ru");
+        userRepositoryJpa.save(user1);
+        userRepositoryJpa.save(user2);
+        ItemRequest request1 = new ItemRequest(null, "Просто1", LocalDateTime.now(), user1);
+        ItemRequest request2 = new ItemRequest(null, "Просто2", LocalDateTime.now(), user2);
+        ItemRequest request3 = new ItemRequest(null, "Просто3", LocalDateTime.now(), user2);
+        ItemRequest request4 = new ItemRequest(null, "Просто4", LocalDateTime.now(), user1);
+        ItemRequest request5 = new ItemRequest(null, "Просто5", LocalDateTime.now(), user1);
+        ItemRequest saveRequest1 = itemRequestJpa.save(request1);
+        ItemRequest saveRequest2 = itemRequestJpa.save(request2);
+        ItemRequest saveRequest3 = itemRequestJpa.save(request3);
+        ItemRequest saveRequest4 = itemRequestJpa.save(request4);
+        ItemRequest saveRequest5 = itemRequestJpa.save(request5);
+        Item item1 = new Item(null, "Аккумуляторная дрель", "Аккумуляторная дрель с зарядкой",
+                true, user1, saveRequest1);
+        Item item2 = new Item(null, "Водяная дрель", "Водяная дрель",
+                true, user1, saveRequest2);
+        Item item3 = new Item(null, "Молоток", "Молоток",
+                true, user1, saveRequest3);
+        Item item4 = new Item(null, "Питолет", "Игрушечный пистолет",
+                true, user1, saveRequest4);
+        Item item5 = new Item(null, "Макбук", "Макбук 2020 года",
+                true, user1, saveRequest5);
+        repositoryJpa.save(item1);
+        repositoryJpa.save(item2);
+        repositoryJpa.save(item3);
+        repositoryJpa.save(item4);
+        repositoryJpa.save(item5);
+        List<Item> items = repositoryJpa.findByRequest_IdIn(List.of(1L, 3L, 5L));
+        assertEquals(5, repositoryJpa.findAll().size());
+        assertEquals(3, items.size());
+    }
 }

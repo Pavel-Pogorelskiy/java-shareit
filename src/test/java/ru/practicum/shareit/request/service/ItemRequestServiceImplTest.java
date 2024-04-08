@@ -102,7 +102,7 @@ class ItemRequestServiceImplTest {
         requests.add(request2);
         when(userService.getUser(anyLong())).thenReturn(user);
         when(requestJpa.findItemRequestByOwner_IdOrderByCreatedDesc(anyLong())).thenReturn(requests);
-        when(itemRepositoryJpa.findByRequest_Id(anyLong())).thenReturn(new ArrayList<>());
+        when(itemRepositoryJpa.findByRequest_IdIn(anyList())).thenReturn(new ArrayList<>());
         ItemRequestsResponseDto requestResponseDto1 = new ItemRequestsResponseDto(1L, "Описание 1",
                 created1, new ArrayList<>());
         ItemRequestsResponseDto requestResponseDto2 = new ItemRequestsResponseDto(2L, "Описание 2",
@@ -140,8 +140,7 @@ class ItemRequestServiceImplTest {
         itemsResponse.add(itemResponse);
         when(userService.getUser(anyLong())).thenReturn(user);
         when(requestJpa.findItemRequestByOwner_IdOrderByCreatedDesc(anyLong())).thenReturn(requests);
-        when(itemRepositoryJpa.findByRequest_Id(2L)).thenReturn(new ArrayList<>());
-        when(itemRepositoryJpa.findByRequest_Id(1L)).thenReturn(items);
+        when(itemRepositoryJpa.findByRequest_IdIn(anyList())).thenReturn(items);
         ItemRequestsResponseDto requestResponseDto1 = new ItemRequestsResponseDto(1L, "Описание 1",
                 created1, itemsResponse);
         ItemRequestsResponseDto requestResponseDto2 = new ItemRequestsResponseDto(2L, "Описание 2",
@@ -234,8 +233,7 @@ class ItemRequestServiceImplTest {
         itemsResponse.add(itemResponse);
         when(userService.getUser(userId)).thenReturn(user1);
         when(requestJpa.findItemRequestNotByOwner_IdOrderByCreatedDesc(anyLong())).thenReturn(requests);
-        when(itemRepositoryJpa.findByRequest_Id(2L)).thenReturn(items);
-        when(itemRepositoryJpa.findByRequest_Id(1L)).thenReturn(new ArrayList<>());
+        when(itemRepositoryJpa.findByRequest_IdIn(anyList())).thenReturn(items);
         ItemRequestsResponseDto requestResponseDto1 = new ItemRequestsResponseDto(1L, "Описание 1",
                 created1, new ArrayList<>());
         ItemRequestsResponseDto requestResponseDto2 = new ItemRequestsResponseDto(2L, "Описание 2",
