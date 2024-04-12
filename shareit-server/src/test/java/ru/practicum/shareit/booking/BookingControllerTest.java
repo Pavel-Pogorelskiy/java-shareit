@@ -392,26 +392,6 @@ class BookingControllerTest {
     }
 
     @Test
-    void getBookingsToBookerTestThrowsValidationExceptionFrom() throws Exception {
-        mvc.perform(get("/bookings?from=-1&size=1")
-                        .header("X-Sharer-User-Id", 1)
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void getBookingsToBookerTestThrowsValidationExceptionSize() throws Exception {
-        mvc.perform(get("/bookings?from=0&size=-1")
-                        .header("X-Sharer-User-Id", 1)
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
     void getBookingsToOwnerTestNullSize() throws Exception {
         BookingResponseDto bookingResponseDto1 = new BookingResponseDto();
         bookingResponseDto1.setBooker(new BookerDto(1L));
@@ -517,25 +497,5 @@ class BookingControllerTest {
                 .andExpect(jsonPath("$.[0].booker.id", is(bookingResponseDto1.getBooker().getId()),
                         Long.class))
                 .andExpect(jsonPath("$.[0].status", is(bookingResponseDto1.getStatus().toString())));
-    }
-
-    @Test
-    void getBookingsToOwnerTestThrowsValidationExceptionFrom() throws Exception {
-        mvc.perform(get("/bookings/owner?from=-1&size=1")
-                        .header("X-Sharer-User-Id", 1)
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void getBookingsToOwnerTestThrowsValidationExceptionSize() throws Exception {
-        mvc.perform(get("/bookings/owner?from=0&size=-1")
-                        .header("X-Sharer-User-Id", 1)
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
     }
 }

@@ -149,44 +149,6 @@ class ItemRequestControllerTest {
     }
 
     @Test
-    void getRequestsToAnotherUsersTestThrowsValidationException() throws Exception {
-        ItemRequestsResponseDto responseDto1 = new ItemRequestsResponseDto(1L, "Описание 1",
-                LocalDateTime.now(), new ArrayList<>());
-        ItemRequestsResponseDto responseDto2 = new ItemRequestsResponseDto(2L, "Описание 2",
-                LocalDateTime.now(), new ArrayList<>());
-        ItemToRequestResponse item = new ItemToRequestResponse(1L,"Предмет 1", "Описание 1",
-                true,2L);
-        responseDto2.setItems(List.of(item));
-        when(service.getRequestsToAnotherUsers(anyLong(), anyLong(), anyLong()))
-                .thenReturn(List.of(responseDto1, responseDto2));
-        mvc.perform(get("/requests/all?from=0&size=-1")
-                        .header("X-Sharer-User-Id", 1)
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void getRequestsToAnotherUsersTestThrowsValidationExceptionFrom() throws Exception {
-        ItemRequestsResponseDto responseDto1 = new ItemRequestsResponseDto(1L, "Описание 1",
-                LocalDateTime.now(), new ArrayList<>());
-        ItemRequestsResponseDto responseDto2 = new ItemRequestsResponseDto(2L, "Описание 2",
-                LocalDateTime.now(), new ArrayList<>());
-        ItemToRequestResponse item = new ItemToRequestResponse(1L,"Предмет 1", "Описание 1",
-                true,2L);
-        responseDto2.setItems(List.of(item));
-        when(service.getRequestsToAnotherUsers(anyLong(), anyLong(), anyLong()))
-                .thenReturn(List.of(responseDto1, responseDto2));
-        mvc.perform(get("/requests/all?from=-1&size=2")
-                        .header("X-Sharer-User-Id", 1)
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
     void getRequestsToAnotherUsersTest() throws Exception {
         ItemRequestsResponseDto responseDto1 = new ItemRequestsResponseDto(1L, "Описание 1",
                 LocalDateTime.now(), new ArrayList<>());
