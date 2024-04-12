@@ -40,15 +40,12 @@ public class ItemRequestController {
              @RequestParam(defaultValue = "0") @Min(0) Long from,
              @RequestParam(required = false) @Min(1) Long size) {
         if (size == null) {
-            log.info("Получение всех запросов других пользователь пользователем с id = {}: {}", userId,
-                    itemRequestService.getRequestsToAnotherUsers(userId, from, Long.MAX_VALUE));
-            return itemRequestService.getRequestsToAnotherUsers(userId, from, Long.MAX_VALUE);
-        } else {
-            log.info("Получение всех запросов других пользователь пользователем с id = {}: {}", userId,
-                    itemRequestService.getRequestsToAnotherUsers(userId, from, size));
+            size = Long.MAX_VALUE;
+        }
+            log.info("Получение всех запросов других пользователь пользователем с userId = {}, from = {}, size = {}",
+                    userId, from, size);
             return itemRequestService.getRequestsToAnotherUsers(userId, from, size);
         }
-    }
 
     @GetMapping("/{requestId}")
     public ItemRequestsResponseDto getRequestById(@RequestHeader("X-Sharer-User-Id") Long userId,

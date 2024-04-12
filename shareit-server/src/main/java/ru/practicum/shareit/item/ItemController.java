@@ -28,13 +28,13 @@ public class ItemController {
     @GetMapping(value = "/{itemId}")
     public ItemDto getItem(@RequestHeader("X-Sharer-User-Id") Long userId,
                            @PathVariable Long itemId) {
-        log.info("Получение вещи {}", itemService.getItem(itemId, userId));
+        log.info("Получение вещи itemId = {}", itemId);
         return itemService.getItem(itemId, userId);
     }
 
     @GetMapping
     public List<ItemDto> getItemToUser(@RequestHeader("X-Sharer-User-Id") Long userId) {
-        log.info("Получение всех вещей пользователя с id + " + userId + ": {}", itemService.getItemToUser(userId));
+        log.info("Получение всех вещей пользователя с id + " + userId);
         return itemService.getItemToUser(userId);
     }
 
@@ -48,7 +48,7 @@ public class ItemController {
     @GetMapping(value = "/search")
     public List<ItemDto> getItemToSearch(@RequestHeader("X-Sharer-User-Id") Long userId,
                                          @RequestParam (defaultValue = "") String text) {
-        log.info("Поиск вещи по запросу - " + text + ": {}", itemService.searchItem(text, userId));
+        log.info("Поиск вещи по запросу - " + text);
         return itemService.searchItem(text, userId);
     }
 

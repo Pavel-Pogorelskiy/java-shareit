@@ -19,13 +19,13 @@ public class UserController {
 
     @GetMapping()
     public List<User> getAllUser() {
-        log.info("Получение всех пользователей: {}", userService.getAllUser());
+        log.info("Получение всех пользователей");
         return userService.getAllUser();
     }
 
     @GetMapping(value = "/{userId}")
     public User getUser(@PathVariable Long userId) {
-        log.info("Получение пользователя с id = " + userId + ": {}", userService.getUser(userId));
+        log.info("Получение пользователя с id = " + userId);
         return userService.getUser(userId);
     }
 
@@ -43,7 +43,7 @@ public class UserController {
 
     @DeleteMapping(value = "/{userId}")
     public void removeUser(@PathVariable Long userId) {
-        log.info("Удаление пользователя с id ={}", userId);
+        log.info("Удаление пользователя с id = {}", userId);
         userService.removeUser(userId);
     }
 }

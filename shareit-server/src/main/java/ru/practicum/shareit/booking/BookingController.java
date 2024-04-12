@@ -39,7 +39,7 @@ public class BookingController {
     @GetMapping(value = "/{bookingId}")
     public BookingResponseDto getBooking(@RequestHeader("X-Sharer-User-Id") Long userId,
                                          @PathVariable Long bookingId) {
-        log.info("Получение запроса на бронирование с id = ", bookingId);
+        log.info("Получение запроса на бронирование с id = {} ", bookingId);
         return bookingService.getBooking(userId, bookingId);
     }
 
@@ -49,13 +49,12 @@ public class BookingController {
                                                         @RequestParam(defaultValue = "0") @Min(0) Long from,
                                                         @RequestParam(required = false) @Min(1) Long size) {
         if (size == null) {
-            log.info("Получение запросов на бронирование для пользователя с id = {}", userId);
-            return bookingService.getBookingToUser(userId, state, from, Long.MAX_VALUE);
-        } else {
-            log.info("Получение запросов на бронирование для пользователя с id = {}", userId);
+            size = Long.MAX_VALUE;
+        }
+            log.info("Получение запросов на бронирование для пользователя с id = {}, " +
+                    "state = {}, from = {}, size = {}", userId, state, from, size);
             return bookingService.getBookingToUser(userId, state, from, size);
         }
-    }
 
     @GetMapping(value = "/owner")
     public List<BookingResponseDto> getBookingsToOwner(@RequestHeader("X-Sharer-User-Id") Long userId,
@@ -63,11 +62,10 @@ public class BookingController {
                                                        @RequestParam(defaultValue = "0") @Min(0) Long from,
                                                        @RequestParam(required = false) @Min(1) Long size) {
         if (size == null) {
-            log.info("Получение запросов на бронирование для пользователя с id = {}", userId);
-            return bookingService.getBookingToOwner(userId, state, from, Long.MAX_VALUE);
-        } else {
-            log.info("Получение запросов на бронирование для пользователя с id = {}", userId);
-            return bookingService.getBookingToOwner(userId, state, from, size);
+            size = Long.MAX_VALUE;
         }
+            log.info("Получение запросов на бронирование других пользователей для пользователя с id = {}, " +
+                    "state = {}, from = {}, size = {}", userId, state, from, size);
+            return bookingService.getBookingToOwner(userId, state, from, size);
     }
 }
