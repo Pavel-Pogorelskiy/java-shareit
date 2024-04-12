@@ -49,7 +49,7 @@ public class ItemController {
     public ResponseEntity<Object> getItemToSearch(@RequestHeader("X-Sharer-User-Id") Long userId,
                                                   @RequestParam (defaultValue = "") String text) {
         log.info("Поиск вещи пользователя с id = {} по запросу - {}", userId, text);
-        if (text.isBlank()||text.contains(" ")) {
+        if (text.isBlank() || text.contains(" ")) {
             return new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
         }
         return itemClient.searchItem(text, userId);
