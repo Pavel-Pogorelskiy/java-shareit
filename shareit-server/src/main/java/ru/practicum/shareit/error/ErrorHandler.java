@@ -80,15 +80,9 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handlerValidationException(final ValidationException exception) {
-        log.info("{}", exception.getMessage());
-        return new ErrorResponse(exception.getMessage());
-    }
-
-    @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handlerSQLIntegrityConstraintViolationException(final SQLIntegrityConstraintViolationException exception) {
+    public ErrorResponse handlerSQLIntegrityConstraintViolationException(
+            final SQLIntegrityConstraintViolationException exception) {
         log.info("{}", exception.getMessage());
         return new ErrorResponse(exception.getMessage());
     }
