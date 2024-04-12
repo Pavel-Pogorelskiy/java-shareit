@@ -17,13 +17,13 @@ public class UserController {
 
     @GetMapping()
     public ResponseEntity<Object> getAllUser() {
-        log.info("Получение всех пользователей: {}", userClient.getAllUser());
+        log.info("Получение всех пользователей");
         return userClient.getAllUser();
     }
 
     @GetMapping(value = "/{userId}")
     public ResponseEntity<Object> getUser(@PathVariable Long userId) {
-        log.info("Получение пользователя с id = " + userId + ": {}", userClient.getUser(userId));
+        log.info("Получение пользователя с id = " + userId);
         return userClient.getUser(userId);
     }
 

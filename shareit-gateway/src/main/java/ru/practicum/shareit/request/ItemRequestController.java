@@ -27,8 +27,7 @@ public class ItemRequestController {
 
     @GetMapping
     public ResponseEntity<Object> getRequestsToUser(@RequestHeader("X-Sharer-User-Id") Long userId) {
-        log.info("Получение всех запросов пользователя с id = {}: {}", userId,
-                itemRequestClient.getRequestsToUser(userId));
+        log.info("Получение всех запросов пользователя с id = {}", userId);
         return itemRequestClient.getRequestsToUser(userId);
     }
 
@@ -38,21 +37,17 @@ public class ItemRequestController {
              @RequestParam(defaultValue = "0") @Min(0) Long from,
              @RequestParam(required = false) @Min(1) Long size) {
         if (size == null) {
-            log.info("Получение всех запросов других пользователь пользователем с id = {}: {}", userId,
-                    itemRequestClient.getRequestsToAnotherUsers(userId, from, Long.MAX_VALUE));
-            return itemRequestClient.getRequestsToAnotherUsers(userId, from, Long.MAX_VALUE);
-        } else {
-            log.info("Получение всех запросов других пользователь пользователем с id = {}: {}", userId,
-                    itemRequestClient.getRequestsToAnotherUsers(userId, from, size));
-            return itemRequestClient.getRequestsToAnotherUsers(userId, from, size);
+            size = Long.MAX_VALUE;
         }
+        log.info("Получение всех запросов других пользователь пользователем с id = {}, from = {}, size = {}",
+                    userId, from, size);
+        return itemRequestClient.getRequestsToAnotherUsers(userId, from, size);
     }
 
     @GetMapping("/{requestId}")
     public ResponseEntity<Object> getRequestById(@RequestHeader("X-Sharer-User-Id") Long userId,
                                                  @PathVariable Long requestId) {
-        log.info("Получение запроса пользователем с id = {}: {}", userId,
-                itemRequestClient.getRequest(userId, requestId));
+        log.info("Получение запроса с id = {} пользователем userId = {}", requestId, userId);
         return itemRequestClient.getRequest(userId, requestId);
     }
 }

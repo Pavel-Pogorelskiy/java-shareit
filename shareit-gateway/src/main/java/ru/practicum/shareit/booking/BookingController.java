@@ -47,12 +47,11 @@ public class BookingController {
                                                         @RequestParam(defaultValue = "0") @Min(0) Long from,
                                                         @RequestParam(required = false) @Min(1) Long size) {
         if (size == null) {
-            log.info("Получение запросов на бронирование для пользователя с id = {}", userId);
-            return bookingClient.getBookings(userId, state, from, Long.MAX_VALUE);
-        } else {
-            log.info("Получение запросов на бронирование для пользователя с id = {}", userId);
-            return bookingClient.getBookings(userId, state, from, size);
+            size = Long.MAX_VALUE;
         }
+            log.info("Получение запросов на бронирование для пользователя с id = {} " +
+                    "state:{} , from = {}, size = {}", userId, state, from, size);
+            return bookingClient.getBookings(userId, state, from, size);
     }
 
     @GetMapping(value = "/owner")
@@ -61,11 +60,10 @@ public class BookingController {
                                                      @RequestParam(defaultValue = "0") @Min(0) Long from,
                                                      @RequestParam(required = false) @Min(1) Long size) {
         if (size == null) {
-            log.info("Получение запросов на бронирование для пользователя с id = {}", userId);
-            return bookingClient.getBookingsOwner(userId, state, from, Long.MAX_VALUE);
-        } else {
-            log.info("Получение запросов на бронирование для пользователя с id = {}", userId);
+            size = Long.MAX_VALUE;
+        }
+            log.info("Получение запросов на бронирование других пользователей для пользователя с id = {}" +
+                    " state:{} , from = {}, size = {}", userId, state, from, size);
             return bookingClient.getBookingsOwner(userId, state, from, size);
         }
-    }
 }

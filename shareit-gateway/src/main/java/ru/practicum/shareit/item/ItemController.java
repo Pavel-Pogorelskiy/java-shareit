@@ -2,12 +2,14 @@ package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.CommentResearchDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 
 @Slf4j
 @RestController
@@ -26,13 +28,13 @@ public class ItemController {
     @GetMapping(value = "/{itemId}")
     public ResponseEntity<Object> getItem(@RequestHeader("X-Sharer-User-Id") Long userId,
                                           @PathVariable Long itemId) {
-        log.info("Получение вещи {}", itemClient.getItem(itemId, userId));
+        log.info("Получение вещи с id = {} для пользователя с userId = {}", itemId, userId);
         return itemClient.getItem(itemId, userId);
     }
 
     @GetMapping
     public ResponseEntity<Object> getItemToUser(@RequestHeader("X-Sharer-User-Id") Long userId) {
-        log.info("Получение всех вещей пользователя с id + " + userId + ": {}", itemClient.getItemToUser(userId));
+        log.info("Получение всех вещей пользователя с id + " + userId);
         return itemClient.getItemToUser(userId);
     }
 
@@ -46,7 +48,10 @@ public class ItemController {
     @GetMapping(value = "/search")
     public ResponseEntity<Object> getItemToSearch(@RequestHeader("X-Sharer-User-Id") Long userId,
                                                   @RequestParam (defaultValue = "") String text) {
-        log.info("Поиск вещи по запросу - " + text + ": {}", itemClient.searchItem(text, userId));
+        log.info("Поиск вещи пользователя с id = {} по запросу - {}", userId, text);
+        if (text.isBlank()||text.contains(" ")) {
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
+        }
         return itemClient.searchItem(text, userId);
     }
 
